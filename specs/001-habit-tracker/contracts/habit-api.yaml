@@ -1,0 +1,147 @@
+openapi: 3.0.3
+info:
+  title: Habit Tracker API
+  version: 1.0.0
+paths:
+  /api/habits:
+    get:
+      summary: List habits
+      responses:
+        '200':
+          description: Habit list
+    post:
+      summary: Create a habit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateHabitRequest'
+      responses:
+        '201':
+          description: Habit created
+  /api/habits/{habitId}:
+    get:
+      summary: Get a habit
+      parameters:
+        - in: path
+          name: habitId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Habit details
+    put:
+      summary: Update a habit
+      parameters:
+        - in: path
+          name: habitId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateHabitRequest'
+      responses:
+        '200':
+          description: Habit updated
+    delete:
+      summary: Delete a habit
+      parameters:
+        - in: path
+          name: habitId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Habit deleted
+  /api/habits/{habitId}/logs:
+    get:
+      summary: List habit logs
+      parameters:
+        - in: path
+          name: habitId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Habit completion log list
+    post:
+      summary: Log a habit completion
+      parameters:
+        - in: path
+          name: habitId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogHabitRequest'
+      responses:
+        '201':
+          description: Log created
+components:
+  schemas:
+    CreateHabitRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+    UpdateHabitRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+    LogHabitRequest:
+      type: object
+      required:
+        - logDate
+      properties:
+        logDate:
+          type: string
+          format: date
+    Habit:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        currentStreak:
+          type: integer
+        longestStreak:
+          type: integer
+        isCompletedToday:
+          type: boolean
+    HabitLog:
+      type: object
+      properties:
+        id:
+          type: integer
+        habitId:
+          type: integer
+        logDate:
+          type: string
+          format: date
